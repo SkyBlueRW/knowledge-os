@@ -1,0 +1,8 @@
+# local agent settings (machine-specific permissions etc.)
+.claude/settings.local.json
+
+# Obsidian workspace state (keep vault config if you version it deliberately)
+.obsidian/workspace*
+
+# OS noise
+.DS_Store
