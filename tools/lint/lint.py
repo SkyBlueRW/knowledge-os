@@ -218,8 +218,8 @@ def main():
 
     # 9. folder census
     for d, dnotes in sorted(by_dir.items()):
-        # log/ grows one archive per quarter by design — never speculative, never sub-clustered
-        if d == PurePosixPath(".") or d.parts[0] in ("tools", "log") or in_staging(d):
+        # log/ grows by design; profile/ is single-note (about-me) by design
+        if d == PurePosixPath(".") or d.parts[0] in ("tools", "log", "profile") or in_staging(d):
             continue
         c = len([n for n in dnotes if n.stem != d.name])
         has_children = any(o != d and o.parts[:len(d.parts)] == d.parts for o in by_dir)

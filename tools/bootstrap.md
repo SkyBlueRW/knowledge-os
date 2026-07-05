@@ -68,8 +68,9 @@ implied. Let the owner skip freely.
 Walk the owner through what was built; fix wording they object to on the spot.
 
 ## 5. Verify and seal
-- Run `python3 tools/lint/lint.py` — a fresh bootstrap should come out clean; fix what
-  doesn't.
+- Run `python3 tools/lint/lint.py` — checks 1–8 should come out clean on a fresh bootstrap;
+  fix what doesn't. §9 (folder census) lines are **advisory look-triggers, not birth
+  defects** — a young domain with one note is normal; never create filler to silence them.
 - **Close** (CLAUDE.md §3): log entry + commit + push. Confirm the remote is set up and
   **private** — the push is the only backup.
 - Point the owner at the rhythm from here: talk to the LLM as things happen (Update), point

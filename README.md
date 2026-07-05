@@ -10,6 +10,10 @@ your dashboard, and your change log from the conversation.
 
 ## Quickstart
 
+**You need:** git and a GitHub account (or any private git host) · an agent CLI installed and
+logged in — [Claude Code](https://claude.com/claude-code) requires a subscription; any agent
+that reads files and runs git works · Python 3 for the lint script.
+
 1. **Create a private repo from this template** (GitHub: *Use this template*, or clone and
    re-init). **Private matters** — this repo will hold your real life.
 2. Open an agent CLI in the repo — [Claude Code](https://claude.com/claude-code) reads
