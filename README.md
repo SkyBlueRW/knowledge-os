@@ -1,4 +1,4 @@
-# Knowledge Repo Template
+# knowledge-os
 
 A seed for a **personal knowledge base run by an LLM** — your notes, your goals, your
 deadlines, in plain Markdown, maintained by an AI agent on your behalf.
@@ -16,6 +16,27 @@ your dashboard, and your change log from the conversation.
    `CLAUDE.md` natively; other tools pick up the same contract via the `AGENTS.md` symlink.
 3. Say: **"Read CLAUDE.md and bootstrap me."** Answer the interview honestly; skip freely.
 4. From then on, just talk to it as things happen. It files, links, and commits; you rule.
+
+## What using it looks like
+
+After bootstrap, the interface is just telling your agent things — in the repo, as they
+happen. A week might contain:
+
+- *"My probation ended today — got the confirmation letter."* → It files the fact in the
+  owning note, refreshes the dashboard, commits. You're done.
+- *"What's on my plate this week?"* → It reads your dashboard and answers from your actual
+  notes, citing them — not from memory, not generically.
+- *"Compare the two apartment options we discussed."* → It answers, then offers to file the
+  comparison so the thinking isn't lost when the chat ends.
+- *"I've got a folder of old notes from my degree."* → Point it there: **ingest** surveys the
+  material, asks you what's still true and which version to trust, and files the distilled
+  result — see [`tools/ingest.md`](tools/ingest.md).
+- *"Run lint."* → Health check; it fixes the mechanical, you rule on the judgment calls.
+- *"Reflect."* → It compares what you said matters against what actually got done, and comes
+  back with next steps and honest questions about your priorities.
+
+Two facts make the delegation comfortable: every change ends with a one-line report you can
+veto, and everything is git — nothing it does is unrecoverable.
 
 ## How it works
 
@@ -35,6 +56,7 @@ your dashboard, and your change log from the conversation.
 | Function | What it does |
 |---|---|
 | **Bootstrap** | First session on a fresh clone: interview → working vault. Run once. |
+| **Ingest** | Absorb existing material (a folder, an export, a project): survey → enriching interview → distilled notes. |
 | **Read** | Answer from the notes: index → domain → note; cite what was used. |
 | **Update** | File what changes — directed by you, or offered when a conversation surfaces something durable. |
 | **Close** | Seal a task: log entry + commit + push. |

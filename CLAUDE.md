@@ -121,6 +121,7 @@ Both **owner-triggered only — never run unprompted.**
 
 ## 4. Playbooks — read before starting that kind of work
 - **Bootstrap** (fresh repo → working vault, run once) → `tools/bootstrap.md`.
+- **Ingest** (absorb existing material — a folder, an export, a project) → `tools/ingest.md`.
 - *Add the owner's own playbooks here as they emerge — one routing line each, procedure in
   `tools/`. Anything that recurs and has rules qualifies: course notes, the owner's writing
   voice, meeting prep, a weekly review.*

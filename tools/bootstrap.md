@@ -39,9 +39,9 @@ folder only with content).
 
 ## 4. Interview — what they study (knowledge domains)
 What they're learning or want organized knowledge on. If they have existing notes elsewhere,
-don't migrate now — note the source and plan the ingestion for a later session (a large
-ingestion is **staging** work, CLAUDE.md §2). Only create a knowledge domain if real content
-came out of the conversation; otherwise leave it for the first actual note.
+don't migrate now — note the source and plan a follow-up [[ingest]] session (`tools/ingest.md`;
+a large ingestion is **staging** work, CLAUDE.md §2). Only create a knowledge domain if real
+content came out of the conversation; otherwise leave it for the first actual note.
 
 ## 5. Rank priorities
 Play back the life areas and ask the owner to rank them. Disagreement and "it depends" are

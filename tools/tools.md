@@ -14,6 +14,9 @@ me"); no tool-specific mechanism (slash commands, skills) is required. Two kinds
 ## Functions — procedure (+ script where earned)
 - [[bootstrap]] — first session on a fresh clone: interview the owner → build `about-me`, the
   first domains, `dashboard.md`, `index.md`, `log/` → verify with lint → Close. Run once.
+- [[ingest]] — absorb existing material (a folder, an export, a project): survey → map played
+  back → enriching interview (still true? which version? what was the why?) → staged if large →
+  decomposed into proper notes. The source stays read-only.
 - [[lint]] (`tools/lint/`) — repo health check. `lint.py` detects (tier 1: deterministic,
   token-free); the LLM remediates and runs the per-domain tier-2 content pass; punch-list is
   presented before fixes; the owner rules on judgment calls.
