@@ -71,6 +71,15 @@ Walk the owner through what was built; fix wording they object to on the spot.
 - Run `python3 tools/lint/lint.py` — checks 1–8 should come out clean on a fresh bootstrap;
   fix what doesn't. §9 (folder census) lines are **advisory look-triggers, not birth
   defects** — a young domain with one note is normal; never create filler to silence them.
+- **Retire the installer (confirm first).** The vault is born; the installation material has
+  done its job and would only mislead future sessions. Tell the owner what gets removed and
+  get their OK, then: delete `tools/bootstrap.md`; drop its entries from `tools/tools.md`,
+  CLAUDE.md (the fresh-clone banner and the §4 Bootstrap line), and the README functions
+  table; rewrite the README's top (intro + Quickstart) as the front door of *this* vault —
+  what it is, whose it is, how to talk to it — keeping the usage examples and how-it-works
+  reference, with one line crediting the [knowledge-os](https://github.com/SkyBlueRW/knowledge-os)
+  seed. If the owner declines, leave everything — the run-once guard at the top keeps a
+  re-run safe.
 - **Close** (CLAUDE.md §3): log entry + commit + push. Confirm the remote is set up and
   **private** — the push is the only backup.
 - Point the owner at the rhythm from here: talk to the LLM as things happen (Update), point

@@ -61,7 +61,7 @@ veto, and everything is git — nothing it does is unrecoverable.
 
 | Function | What it does |
 |---|---|
-| **Bootstrap** | First session on a fresh clone: intro → read what you have → necessary questions → working vault. Run once. |
+| **Bootstrap** | First session on a fresh clone: intro → read what you have → necessary questions → working vault. Run once — then it retires itself and rewrites this README as your vault's front door. |
 | **Ingest** | Absorb existing material (a folder, an export, a project): survey → enriching interview → distilled notes. |
 | **Read** | Answer from the notes: index → domain → note; cite what was used. |
 | **Update** | File what changes — directed by you, or offered when a conversation surfaces something durable. |

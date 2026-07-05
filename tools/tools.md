@@ -14,7 +14,8 @@ me"); no tool-specific mechanism (slash commands, skills) is required. Two kinds
 ## Functions — procedure (+ script where earned)
 - [[bootstrap]] — first session on a fresh clone: introduce → read the owner's existing
   material if any (inferences played back to confirm) → ask the necessary questions → build
-  `about-me`, the first domains, `dashboard.md`, `index.md`, `log/` → lint → Close. Run once.
+  `about-me`, the first domains, `dashboard.md`, `index.md`, `log/` → lint → Close. Run once;
+  ends by retiring itself and the install-facing docs (owner-confirmed).
 - [[ingest]] — absorb existing material (a folder, an export, a project): survey → map played
   back → enriching interview (still true? which version? what was the why?) → staged if large →
   decomposed into proper notes. The source stays read-only.
