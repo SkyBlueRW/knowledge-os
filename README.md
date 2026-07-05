@@ -14,7 +14,9 @@ your dashboard, and your change log from the conversation.
    re-init). **Private matters** — this repo will hold your real life.
 2. Open an agent CLI in the repo — [Claude Code](https://claude.com/claude-code) reads
    `CLAUDE.md` natively; other tools pick up the same contract via the `AGENTS.md` symlink.
-3. Say: **"Read CLAUDE.md and bootstrap me."** Answer the interview honestly; skip freely.
+3. Say: **"Read CLAUDE.md and bootstrap me."** It introduces itself, asks if you have
+   existing material to start from (a resume, a notes folder, a project), then asks only the
+   questions that material didn't answer. Skip freely.
 4. From then on, just talk to it as things happen. It files, links, and commits; you rule.
 
 ## What using it looks like
@@ -55,7 +57,7 @@ veto, and everything is git — nothing it does is unrecoverable.
 
 | Function | What it does |
 |---|---|
-| **Bootstrap** | First session on a fresh clone: interview → working vault. Run once. |
+| **Bootstrap** | First session on a fresh clone: intro → read what you have → necessary questions → working vault. Run once. |
 | **Ingest** | Absorb existing material (a folder, an export, a project): survey → enriching interview → distilled notes. |
 | **Read** | Answer from the notes: index → domain → note; cite what was used. |
 | **Update** | File what changes — directed by you, or offered when a conversation surfaces something durable. |
