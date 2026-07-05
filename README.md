@@ -24,8 +24,8 @@ your dashboard, and your change log from the conversation.
 After bootstrap, the interface is just telling your agent things — in the repo, as they
 happen. A week might contain:
 
-- *"My probation ended today — got the confirmation letter."* → It files the fact in the
-  owning note, refreshes the dashboard, commits. You're done.
+- *"Passed the certification exam — results came in this morning."* → It files the fact in
+  the owning note, refreshes the dashboard, commits. You're done.
 - *"What's on my plate this week?"* → It reads your dashboard and answers from your actual
   notes, citing them — not from memory, not generically.
 - *"Compare the two apartment options we discussed."* → It answers, then offers to file the
