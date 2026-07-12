@@ -8,23 +8,29 @@ the owner (procedure: tools/lint/lint.md). Always exits 0.
 
 import re
 import subprocess
+import sys
 from collections import Counter, defaultdict
 from datetime import date
 from difflib import get_close_matches
 from pathlib import Path, PurePosixPath
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to a legacy code page
+
 REPO = Path(__file__).resolve().parents[2]
 
 REQUIRED_KEYS = ("title", "status", "created", "updated")  # tags optional
 STATUSES = {"active", "staging", "archived"}
-NO_FRONTMATTER = {"CLAUDE.md", "AGENTS.md", "README.md"}  # contract (+ symlink) + repo front page
+NO_FRONTMATTER = {"CLAUDE.md", "AGENTS.md", "README.md"}  # contract (+ pointer file) + repo front page
 ORPHAN_EXEMPT = {"index", "dashboard", "log", "CLAUDE", "AGENTS", "README"}
 MAX_NOTE_LINES = 200
 MAX_CLAUDE_MD_LINES = 150  # CLAUDE.md's own budget
 MAX_FOLDER_NOTES = 10
+MAX_DASH_BULLET_LINES = 2  # the dashboard is a map — 1–2 lines per item
 
 WIKILINK = re.compile(r"\[\[([^\]|#\n]+)(?:#[^\]|\n]*)?(?:\|[^\]\n]*)?\]\]")
 ISO_DATE = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
+STATUS_BLOCK = re.compile(r"\*\*Status\s*[—–-]+\s*\d{4}-\d{2}-\d{2}")
 MONTH_NAMES = (
     "January|February|March|April|May|June|July|August|September|October|"
     "November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec"
@@ -103,7 +109,7 @@ def main():
 
     frontmatter, broken, orphans, index_sync = [], [], [], []
     oversize, dash_dates, staging_inv, census, staging_info = [], [], [], [], []
-    placeholders = []
+    placeholders, temporal = [], []
 
     # 1. frontmatter
     for n in notes:
@@ -120,13 +126,17 @@ def main():
         if s and s not in STATUSES:
             issues.append(f"status `{s}` not in enum")
         cd, ud = parse_iso(n.fm.get("created")), parse_iso(n.fm.get("updated"))
-        if n.fm.get("created") and not cd:
-            issues.append(f"created `{n.fm['created']}` not YYYY-MM-DD")
-        if n.fm.get("updated") and not ud:
-            issues.append(f"updated `{n.fm['updated']}` not YYYY-MM-DD")
+        vd, rd = parse_iso(n.fm.get("verified")), parse_iso(n.fm.get("review_after"))
+        for label, raw, d in (("created", n.fm.get("created"), cd),
+                              ("updated", n.fm.get("updated"), ud),
+                              ("verified", n.fm.get("verified"), vd),
+                              ("review_after", n.fm.get("review_after"), rd)):
+            if raw and not d:
+                issues.append(f"{label} `{raw}` not YYYY-MM-DD")
         if cd and ud and ud < cd:
             issues.append("updated before created")
-        for label, d in (("created", cd), ("updated", ud)):
+        # review_after in the future is the normal case — checked in 10, not here
+        for label, d in (("created", cd), ("updated", ud), ("verified", vd)):
             if d and d > today:
                 issues.append(f"{label} `{d}` is in the future")
         if issues:
@@ -175,7 +185,7 @@ def main():
                 target.append(f"`{d}/` has {len(dnotes)} notes but no `{idx_name}.md` index")
             continue
         for n in content:
-            if f"[[{n.stem}" not in idx.body:
+            if n.stem not in idx.links:
                 target.append(f"`{n.rel}` not listed in its index `{idx.rel}`")
         if d != PurePosixPath(".") and d not in staging_roots and not in_staging(d):
             parent = d.parent
@@ -183,7 +193,7 @@ def main():
             pidx = next((n for n in by_dir.get(parent, []) if n.stem == pidx_name), None)
             if pidx is None:
                 index_sync.append(f"`{d}/` has an index but `{parent}/` has no parent index to list it")
-            elif f"[[{idx.stem}" not in pidx.body:
+            elif idx.stem not in pidx.links:
                 index_sync.append(f"`[[{idx.stem}]]` not listed in parent index `{pidx.rel}`")
 
     # 6. oversize
@@ -195,7 +205,7 @@ def main():
             line = f"`{n.rel}` — {n.n_lines} lines (limit ~{limit})"
             (staging_info if in_staging(n.rel) else oversize).append(line)
 
-    # 7. dashboard past dates
+    # 7. dashboard hygiene: past dates + overlong bullets (a map — 1–2 lines per item)
     dash = next((n for n in notes if n.stem == "dashboard"), None)
     if dash:
         body = strip_code(dash.body)
@@ -209,6 +219,21 @@ def main():
         for d, s in sorted(found):
             if d and d < today:
                 dash_dates.append(f"“{s}” is in the past — deadline missed, or stale context?")
+        bullet_re = re.compile(r"^\s*(?:[-*]|\d+\.)\s+")
+        bullets = []  # (first-line text, line count); nested bullets are their own item
+        cur = None
+        for line in dash.body.splitlines() + [""]:
+            if bullet_re.match(line):
+                cur = [bullet_re.sub("", line), 1]
+                bullets.append(cur)
+            elif cur and line.strip() and not line.lstrip().startswith(("#", ">")):
+                cur[1] += 1
+            else:
+                cur = None
+        for first, count in bullets:
+            if count > MAX_DASH_BULLET_LINES:
+                label = re.sub(r"[*_`]", "", first).strip()[:60]
+                dash_dates.append(f"“{label}…” — {count} lines (map rule: 1–2 per item)")
 
     # 8. staging inventory
     for n in notes:
@@ -228,6 +253,19 @@ def main():
         elif c == 1 and not has_children:
             census.append(f"`{d}/` — single-note folder (speculative, or awaiting growth?)")
 
+    # 10. temporal integrity: expired review_after · stacked dated-status blocks
+    for n in notes:
+        if n.fm is None or in_staging(n.rel):
+            continue
+        rd = parse_iso(n.fm.get("review_after"))
+        if rd and rd < today:
+            temporal.append(f"`{n.rel}` — review_after `{rd}` has passed (verified "
+                            f"{n.fm.get('verified', '?')}) — recheck the source before relying")
+        n_status = len(STATUS_BLOCK.findall(strip_code(n.body)))
+        if n_status > 1:
+            temporal.append(f"`{n.rel}` — {n_status} dated Status blocks — rewrite one current "
+                            "state in place (history lives in the log)")
+
     print(f"# Lint report — {today} · {len(notes)} notes scanned")
 
     def section(title, items, note=""):
@@ -246,9 +284,10 @@ def main():
     section("4. Orphan notes", orphans, "log-timeline links don't count as inbound")
     section("5. Index sync", index_sync)
     section("6. Oversize notes", oversize)
-    section("7. Dashboard past dates", dash_dates)
+    section("7. Dashboard hygiene (past dates · overlong bullets)", dash_dates)
     section("8. Staging inventory", staging_inv)
     section("9. Folder census", census)
+    section("10. Temporal integrity (expired review_after · stacked status blocks)", temporal)
     section("Staging subtree (informational only)", staging_info,
             "exempt from index-wiring rules by design; listed for awareness")
 

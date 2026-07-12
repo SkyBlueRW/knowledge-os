@@ -2,7 +2,7 @@
 title: Lint — Repo Health Check
 status: active
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-12
 ---
 
 # Lint — Repo Health Check
@@ -21,14 +21,17 @@ separate function — [[reflect]] — not part of lint.
 Run the read-only detector (always exits 0; prints a Markdown report):
 
 ```bash
-python3 tools/lint/lint.py
+python3 tools/lint/lint.py   # macOS / Linux
+python tools\lint\lint.py    # Windows (python3 usually doesn't exist there)
 ```
 
-Nine checks: frontmatter validity · broken wikilinks (near-match suggestions) + duplicate
-basenames · dangling-placeholder tally (ranked; repeated danglers = note-creation candidates) ·
-orphan notes (log-timeline links don't count as inbound) · index sync incl. parent wiring
-(staging subtrees informational) · oversize notes (>200 lines; CLAUDE.md >150) · past dates on
-the dashboard · staging inventory · folder census (>10 notes, or single-note folders).
+Ten checks: frontmatter validity (incl. the optional `verified`/`review_after` fields) · broken
+wikilinks (near-match suggestions) + duplicate basenames · dangling-placeholder tally (ranked;
+repeated danglers = note-creation candidates) · orphan notes (log-timeline links don't count as
+inbound) · index sync incl. parent wiring, on exact parsed link targets (staging subtrees
+informational) · oversize notes (>200 lines; CLAUDE.md >150) · dashboard hygiene (past dates;
+bullets >2 lines — the map rule) · staging inventory · folder census (>10 notes, or single-note
+folders) · temporal integrity (expired `review_after`; >1 dated Status block in a note).
 
 ## Tier 2 — content health (LLM-read, per domain)
 Read the domain's notes and look for:

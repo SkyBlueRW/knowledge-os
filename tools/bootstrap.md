@@ -2,7 +2,7 @@
 title: Bootstrap — First Session, Fresh Repo → Working Vault
 status: active
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-12
 ---
 
 # Bootstrap — First Session
@@ -59,7 +59,8 @@ implied. Let the owner skip freely.
   produced (goal, status, next action, dates — one note per distinct concern).
 - Knowledge domains only where content emerged.
 - `dashboard.md` — the front page: ranked priorities, time-sensitive items (soonest first,
-  with dates), each line pointing to its owning note. A map, never a second copy.
+  with dates), a **now / next / parked** posture tag leading each actionable item, each line
+  pointing to its owning note. A map, never a second copy.
 - `index.md` — the root index: one line per domain index, plus `dashboard`, `log`, `tools`.
 - `log/log.md` — the change log (header per CLAUDE.md §3 Close), with bootstrap as its first
   entry.
@@ -68,9 +69,10 @@ implied. Let the owner skip freely.
 Walk the owner through what was built; fix wording they object to on the spot.
 
 ## 5. Verify and seal
-- Run `python3 tools/lint/lint.py` — checks 1–8 should come out clean on a fresh bootstrap;
-  fix what doesn't. §9 (folder census) lines are **advisory look-triggers, not birth
-  defects** — a young domain with one note is normal; never create filler to silence them.
+- Run `python3 tools/lint/lint.py` (Windows: `python tools\lint\lint.py`) — every check except
+  §9 should come out clean on a fresh bootstrap; fix what doesn't. §9 (folder census) lines are
+  **advisory look-triggers, not birth defects** — a young domain with one note is normal; never
+  create filler to silence them.
 - **Retire the installer (confirm first).** The vault is born; the installation material has
   done its job and would only mislead future sessions. Tell the owner what gets removed and
   get their OK, then: delete `tools/bootstrap.md`; drop its entries from `tools/tools.md`,

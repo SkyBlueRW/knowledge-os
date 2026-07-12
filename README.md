@@ -17,7 +17,8 @@ that reads files and runs git works · Python 3 for the lint script.
 1. **Create a private repo from this template** (GitHub: *Use this template*, or clone and
    re-init). **Private matters** — this repo will hold your real life.
 2. Open an agent CLI in the repo — [Claude Code](https://claude.com/claude-code) reads
-   `CLAUDE.md` natively; other tools pick up the same contract via the `AGENTS.md` symlink.
+   `CLAUDE.md` natively; other tools pick up the same contract via `AGENTS.md`, a pointer
+   file that routes them to it.
 3. Say: **"Read CLAUDE.md and bootstrap me."** It introduces itself, asks if you have
    existing material to start from (a resume, a notes folder, a project), then asks only the
    questions that material didn't answer. Skip freely.

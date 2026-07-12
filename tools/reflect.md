@@ -2,7 +2,7 @@
 title: Reflect — Priorities Review
 status: active
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-12
 ---
 
 # Reflect — Priorities Review
@@ -27,8 +27,8 @@ reflect asks *is the life content still true and honestly prioritized*.
 2. **Next steps.** For each dashboard priority, given what's now done: what's the highest-
    leverage next action? Confirm, sharpen, or replace the next actions listed.
 3. **Priority discussion.** Where stated order and demonstrated effort diverge, ask *which is
-   wrong — the order or the effort?* Dashboard items with no log movement in the window and no
-   deferred marker get the same question: still real, or delete / defer explicitly? Recommend
+   wrong — the order or the effort?* Dashboard items with no log movement in the window and not
+   tagged **parked** get the same question: still real, or delete / park explicitly? Recommend
    a re-ranking if the evidence supports one; the owner rules.
 
 While reading, flag (don't fix) external claims that look stale — rules, rates, thresholds,
@@ -49,7 +49,7 @@ the run**; accepted recommendations become ordinary Updates afterwards.
 
 - Each verdict is filed **into the owning note** — dashboard reorder, next-action change,
   re-verification task — per the normal Update function.
-- A consciously parked item gets the marker **`(deferred — revisit <absolute date or YYYY-Qn>)`**
-  on its dashboard line, so later reflects skip it until then. Use sparingly.
+- A consciously parked item gets the dashboard's **parked** tag, naming what brings it back (a
+  trigger or an absolute revisit date), so later reflects skip it until then. Use sparingly.
 - One `reflect` log entry records the verdicts (it also anchors the next run's window);
   then Close.
