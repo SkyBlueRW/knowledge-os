@@ -47,18 +47,26 @@ def strip_code(text):
 
 
 def parse_frontmatter(text):
+    """Returns (fm dict, body, defects). The repo's schema is flat key: value —
+    anything else in the block is a defect, not silently ignored."""
     if not text.startswith("---"):
-        return None, text
+        return None, text, []
     lines = text.splitlines()
     for i in range(1, len(lines)):
         if lines[i].strip() == "---":
-            fm = {}
+            fm, defects = {}, []
             for line in lines[1:i]:
+                if not line.strip() or line.lstrip().startswith("#"):
+                    continue
                 m = re.match(r"^([A-Za-z][\w-]*):\s*(.*)$", line)
-                if m:
-                    fm[m.group(1)] = m.group(2).strip()
-            return fm, "\n".join(lines[i + 1:])
-    return None, text
+                if not m:
+                    defects.append(f"malformed frontmatter line `{line.strip()}`")
+                    continue
+                if m.group(1) in fm:
+                    defects.append(f"duplicate key `{m.group(1)}`")
+                fm[m.group(1)] = m.group(2).strip()
+            return fm, "\n".join(lines[i + 1:]), defects
+    return None, text, []
 
 
 def parse_iso(s):
@@ -75,7 +83,7 @@ class Note:
         self.stem = path.stem
         text = path.read_text(encoding="utf-8")
         self.n_lines = text.count("\n") + 1
-        self.fm, self.body = parse_frontmatter(text)
+        self.fm, self.body, self.fm_defects = parse_frontmatter(text)
         self.links = [t.strip() for t in WIKILINK.findall(strip_code(self.body))]
 
 
@@ -118,10 +126,13 @@ def main():
         if n.fm is None:
             frontmatter.append(f"`{n.rel}` — missing frontmatter")
             continue
-        issues = []
+        issues = list(n.fm_defects)
         missing = [k for k in REQUIRED_KEYS if k not in n.fm]
         if missing:
             issues.append("missing " + ", ".join(missing))
+        empty = [k for k in REQUIRED_KEYS if k in n.fm and not n.fm[k]]
+        if empty:
+            issues.append("empty " + ", ".join(empty))
         s = n.fm.get("status")
         if s and s not in STATUSES:
             issues.append(f"status `{s}` not in enum")
@@ -196,13 +207,16 @@ def main():
             elif idx.stem not in pidx.links:
                 index_sync.append(f"`[[{idx.stem}]]` not listed in parent index `{pidx.rel}`")
 
-    # 6. oversize
+    # 6. oversize (+ long permanent notes missing the content gate's ## Contents TOC)
     for n in notes:
         if n.stem == "log" or n.stem.startswith("log-"):
             continue
         limit = MAX_CLAUDE_MD_LINES if n.path.name == "CLAUDE.md" else MAX_NOTE_LINES
         if n.n_lines > limit:
             line = f"`{n.rel}` — {n.n_lines} lines (limit ~{limit})"
+            if (n.path.name != "CLAUDE.md" and not in_staging(n.rel)
+                    and not re.search(r"^## Contents\s*$", n.body, re.M)):
+                line += " · **no `## Contents` TOC**"
             (staging_info if in_staging(n.rel) else oversize).append(line)
 
     # 7. dashboard hygiene: past dates + overlong bullets (a map — 1–2 lines per item)
