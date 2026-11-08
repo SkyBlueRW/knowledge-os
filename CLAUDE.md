@@ -1,149 +1,195 @@
 # CLAUDE.md
 
 This file is the contract for any LLM working in this repository: what the repo is, how it is
-structured, and the functions that operate it. What the repo *contains* is `index.md`'s job —
-start there and drill down.
+structured, and the functions that operate it. What the repo *contains* is `index.md`'s job;
+what's on the owner's plate is `dashboard.md`'s: **read both at every session start, and follow
+the dashboard's header.**
 
 > **Fresh clone?** If `index.md` doesn't exist yet, this repo hasn't been born: read
-> `tools/bootstrap.md` and build the vault *with the owner* before doing anything else.
+> `playbooks/bootstrap.md` and build it *with the owner* before doing anything else.
 
 ## 1. What this is
-A personal knowledge base and the owner's acting assistant — not a software project. Everything
-is plain Markdown, authored and edited mostly *by the LLM on the owner's behalf*, and read both
-by agent tools and in Obsidian (hence `[[wikilinks]]`). Current priorities live in
-`dashboard.md`, the owner's front page; `AGENTS.md` is an explicit pointer file to this
-contract (not a symlink — those don't survive Windows checkouts) so every tool reads the same rules.
+A personal knowledge base whose job is **context**: it holds what the LLM needs to be a helpful
+assistant to the owner. The LLM also maintains it: the repo grows from conversations and the
+owner's projects, and stays current and well-formed under the rules below, with the owner ruling
+on judgment calls. Not a software project — plain Markdown, read both by agent tools and in
+Obsidian (hence `[[wikilinks]]`).
 
-- **Budget ~150 lines.** This file is loaded every session: keep it to what *every* session
-  needs. Task-scoped guidance goes in a `tools/` playbook with one routing line here; when a
-  change would push past the budget, compress before extending.
-- **Confidential:** the vault is personal data (identity, finances, health, family) — never
-  publish, export, or paste contents into external systems without explicit owner approval.
+- **Budget ~200 lines.** This file is loaded every session: keep it to what *every* session
+  needs. Task-scoped guidance goes in a playbook (`playbooks/`); when a change would push past
+  the budget, compress before extending.
+- **Confidential:** the repo is personal data (identity, finances, health, family) —
+  never publish, export, or paste contents into external systems without explicit owner approval.
 - **Working style:** concise and direct. For open-ended or structural decisions, lead with a
   reasoned recommendation in prose, not a menu of options.
-- **Advising the owner:** ground advice in their notes and actual goals — never generic.
 
 ## 2. Structure
-Top-level folders are **domains**, and each serves one of the repo's two purposes:
-**knowledge domains** hold what the owner studies — timeless concept notes that grow by
-cross-linking and never carry deadlines; **life domains** hold what the owner runs — goals,
-processes, deadlines, next actions — they feed `dashboard.md` and go stale without maintenance.
-Keep the wall between them: a process is not a concept. Which domains exist right now is
-`index.md`'s job.
+Content comes in two kinds:
+- **Knowledge:** what the owner has learned or is learning, from study and work: durable concept
+  notes that grow by cross-linking and never carry deadlines. As context, what the owner knows
+  (their skill set) and how they think: explanations build on it and skip what it covers, and tasks
+  that draw on it (a resume, a design, a target role's gaps) cite it; the gaps and the plans to
+  close them are operational notes.
+- **Operations:** what the owner runs: goals, processes, deadlines, next actions, in volatile notes
+  that feed `dashboard.md` and go stale without maintenance. As context, the owner's actual
+  situation, goals and decisions; a recorded decision isn't reopened unless the facts behind it
+  changed.
 
-Both kinds share **one vault** deliberately: the repo is private, and learning stays linked
-from the owner's goals as evidence — don't split it. New domains get created **only when
-there's content to file** — never speculatively, never empty. Alongside the domains sit two
-infrastructure folders this file defines: `tools/` (functions + playbooks; registry `tools/tools.md`) and `log/` (the change log).
+Keep the wall between them: concepts (ideas that stay true) go in knowledge notes; processes
+(steps, dates, status) go in operational notes. Each top-level **domain** folder holds one kind, a
+knowledge or an operational domain; which domains exist right now is `index.md`'s job.
 
-**Indexes (recursive rule):** every folder with **2+ notes** has an index note named after the
-folder (root: `index.md`; domain: `<domain>.md`). An index is a *thin catalog*: one
-`[[wikilink]]`ed line per note plus a line per sub-folder index — a map, never a second source
-of truth. The hierarchy mirrors the folder tree. An index changes **only** when a note is
-added, removed, renamed, or its stable one-line role changes — never for content or status
-updates; a role line says what the note *owns*, posture lives on the dashboard.
+Alongside the domains sit four infrastructure folders this file defines: `functions/` (the
+procedures of the functions beyond the baseline three, §5), `playbooks/` (the rules for one
+recurring kind of work each), `log/` (the change log) and `in-progress/` (work under construction:
+§2 In progress). Read a playbook before starting its work, together with the notes that work draws
+on (the instance's operational notes, the knowledge it builds on); its rules add to this file's and
+take precedence where they conflict.
 
-**Format gate.** Every note is Markdown with YAML frontmatter — nothing more is required; a
-note's kind and role follow from where it sits and what it's named:
+**In progress (`in-progress/`):** the construction site for work with an exit (an active course, a
+large ingestion, a parked multi-session task): a note, or a sub-folder with its own index for a
+cluster, each with a banner stating the exit plan and a dated dashboard line for the exit. It is
+exempt from the content gate and right-sizing (§3) but keeps its frontmatter, which its root line
+copies; a single note is fine, and the folder goes when empty. At the exit, durable knowledge
+refactors into permanent notes and the work is deleted.
+
+## 3. Notes
+**Format gate.** Every note (every `.md` file except this one, `AGENTS.md` and `README.md`) is
+Markdown with this YAML frontmatter, and nothing more:
 
 ```yaml
 ---
 title: <human title>
-tags: [domain/subtopic]   # optional — only for a second axis the folder can't express
-status: active | staging | archived
-created: YYYY-MM-DD
+description: <one short line on what it owns (what's inside, not a summary), no ": " in it>
 updated: YYYY-MM-DD
-verified: YYYY-MM-DD      # optional, volatile life notes only: external claims last checked
-review_after: YYYY-MM-DD  # optional: past this date, recheck the source before relying
 ---
 ```
 
-- **Dates** are absolute `YYYY-MM-DD`; set `updated` to today (from environment context) on
-  every edit — never guess. `updated` = the file changed; `verified` = claims rechecked at source.
-- **Filing:** one home per fact — extend the note that owns the concept, or create one (wired
-  into its index) if none does; never state the same fact in two places. `[[wikilink]]` related
-  notes to each other.
-- **Right-sizing:** a note that passes **~200 lines** or grows a second distinct concern splits
-  into linked notes (update the index).
-- **Editing:** update in place over appending duplicates; preserve the owner's own wording;
-  don't fabricate personal facts — leave blanks. No ruling-dates in note bodies — provenance
-  lives in the log; an inline date only when the date itself is the content (a deadline, an
-  as-of fact, a don't-relitigate anchor). If new information *contradicts* the note,
-  stop and re-confirm with the owner before overwriting.
+- **Dates** are absolute `YYYY-MM-DD`. In the frontmatter, `updated` is set to today (from
+  environment context) on every content edit — never guess; a frontmatter-only sweep (retiring or
+  backfilling a field) leaves it. In the body, a date belongs when it is part of the fact (a
+  deadline, an event such as a filing or an approval, a settled call that shouldn't be reopened),
+  and a fact that can change (a rule, a cutoff, a fee) carries `(verified: YYYY-MM-DD)`, the day it
+  was last checked at source. When something was decided or written stays out: provenance lives in
+  the log.
+- **Right-sizing:** check a note as it passes **~200, 500 and 800 lines** (then every 300): two
+  or more separate topics → split into linked notes (update the index); one long topic → keep it
+  whole and record the check with `<!-- size checked: N -->` under the title.
 
 **Content gate (quality bar):** capture the *ideas, intuition, and practical relevance* — not a
-transcript; clean up obvious errors; keep it right-sized; stay faithful to the source;
-cross-link liberally. Keep what will recur: the decisions made and where the owner disagreed
-(and why), not just conclusions. In practice: a `## Contents` TOC for long notes, figures
-converted to text, code in fenced blocks.
+transcript; clean up obvious errors; stay faithful to the source. Keep what will recur: the
+decisions made and where the owner disagreed (and why), not just conclusions; in knowledge notes,
+the owner's own angle (intuitions, what confused them, links to their work), the part no LLM can
+supply. Figures become text; code goes in fenced blocks. Write plainly: concise, plain words.
 
-**Staging (work in progress):** any in-progress effort (an active course, a large ingestion, a
-draft cluster) can get a temporary staging folder: index note with `status: staging` and a
-banner stating the exit plan; deliberately **unwired from the permanent indexes**, and exempt
-from both gates while active. Staging is a loan, not a home — at the end, durable knowledge
-refactors into permanent notes, and the folder (with its scaffolding) is deleted.
+## 4. Indexing
+**Used by:** Read (§5), to find a note; Update (§5), to file one: where it goes and what it's
+named, whether a folder is created or split, which index lines change; Lint, to check the repo
+against this section.
 
-## 3. Functions
-Three baseline functions — **Read**, **Update**, **Close** — written out here. Everything else
-is reached by name + link and read on use; the registry `tools/tools.md` lists them all.
+**Standard:** every note is reachable by following indexes down from `index.md` (the root, then
+each sub-folder's index): few hops, each index short enough to scan, each line enough to choose
+by. The rules below are the specific ways to meet it; where they don't settle a case, judge the
+case against the standard.
 
-**Read — find and use knowledge.** Start at `index.md` (or `dashboard.md` for what's on the
-owner's plate) → domain index → the one note; read the least that answers — `grep` only when the
-indexes don't resolve it. Ground answers in what's actually written and cite the notes used. A
-Read that produces a real synthesis (a comparison, a connection, an analysis) becomes a
-**passive Update** — offer to file it, so explorations compound instead of dying in chat.
+**Indexes:** each maps one folder, one line per direct item (note or sub-folder), nothing deeper.
+Other files (scripts, assets) aren't items: each sits beside the note that uses it and is linked
+from it; a script is named after its note. Every folder with 2+ items has exactly one, named after
+the folder (e.g. `ai/nlp/nlp.md`), with two exceptions:
+- **Root index (`index.md`):** indexes the repo root *and* every top-level folder (none but
+  `log/` has its own), so it runs two levels: each top-level folder, then its direct items.
+  Budget ~100 lines.
+- **`log/`:** the active log `log/log.md` is its index; the root links it, never lists it.
 
-**Update — add or change knowledge.** Two modes:
-- *Active:* the owner directs content in — for source material, discuss key takeaways before
-  writing.
-- *Passive:* the conversation surfaces something durable — test: *would a future session answer
-  differently because of this?* (a changed life fact, a decision + its why, a synthesis,
-  collaboration feedback). Objective facts → update directly; interpretations → offer first;
-  skip unconcluded explorations and hypotheticals; a contradiction with the target note → stop
-  and re-confirm (per Editing).
+**Index lines:** `[[note]] — <its description>`, copied verbatim from the note's frontmatter (a
+sub-folder's description lives in its index note's frontmatter, and its line copies that; a
+top-level folder gets a bare heading in the root, with no description). An index is a map,
+never a second source of truth: it changes **only** when an item is added, removed, renamed, or its
+description changes. Status lives in the note, what's due on the dashboard.
 
-Every update: file per the Filing rule; pass both gates and the index rule (§2); a changed
-volatile fact → grep its old wording across life domains, indexes, dashboard and rewrite
-every projection (old and new conclusions must never co-exist); if a life note changed,
-**rewrite** its `dashboard.md` pointer — replace the bullet, never append to it (the
-dashboard is a map — a **now / next / parked** posture tag leads each actionable item;
-*parked* names what brings it back + at most a few-word why — an **external**-event trigger
-also carries an absolute recheck-by date, since no session watches the world: a date fires,
-"until X happens" doesn't; then next action, deadline, link, 1–2 lines per item — never a
-second copy); **end the reply with a standalone report, visually set off: a bold
-`Edit report` label, the task's `log/log.md` entry quoted as a `>` blockquote (entry text
-only — drop the `## ` marker, it renders as a huge heading), commit hash on its own line** —
-never woven into prose; the fixed label is what makes it instantly recognizable (the entry
-already names the notes and the what/why, and quoting it lets the owner veto the permanent
-record while the turn is warm); **on an amend-in-place, quote only the portion added or
-reworded this round** — verbatim, never paraphrased — noting the remainder unchanged (it's
-already-audited record). An unsealed mid-task update reports notes + a one-liner the same way.
-No padding with log/commit mechanics.
+**Names:** notes and folders, lowercase kebab-case, unique across the repo (wikilinks resolve
+by name, and a folder's index takes its name).
 
-**Close — seal a task.** At task close — not per edit, and **never batched to session end** (a
-session may close several tasks): one `log/log.md` entry + one **commit + push**, message
-mirroring the entry — never leave work uncommitted or unpushed (the push is the only backup).
-The unit of Close is the **task, not the turn**: seal when a task lands and attention moves
-on — never hold a seal on an unrelated open question; if the next turns reopen the same task,
-**amend its log entry in place** and commit again (git records the drafts, the log records
-settled tasks). Log entry — **1–2 lines when fresh**: `## [YYYY-MM-DD] <op> | [[notes touched]] — one-liner`;
-the one-liner says *what changed and the decision/why* — never the detail (in the notes) or the diff (in git).
-Amendments append, **each delta itself 1–2 lines**: an amended entry may grow past the
-guideline by accretion — never re-compress it (that rewrites already-audited record and buries
-the delta the owner audits). The active log holds the current quarter; at quarter close sweep
-to `log/log-YYYY-qN.md` (the active log itself is `log/`'s folder index).
+The folder rules below are for the content folders, the domains. The infrastructure folders are
+the four §2 defines; these rules don't apply to them.
 
-**Lint — repo health.** Is the repo well-formed? The script detects (links, indexes, sizes),
-the LLM remediates, judgment calls go on a punch-list the owner rules on → `tools/lint/lint.md`.
+**Hierarchy — how to propose structure:**
+- **By subject, not by source:** folders follow how the owner looks for things, never by course,
+  book or post (a course's material files into the subjects it teaches).
+- **Names predict contents:** a folder's name, with its index line, should let a session predict
+  whether a given note is inside: the subject's plain name, specific enough to route by, broad
+  enough for what's coming (`language-tests/`, not `toefl/`); never a catch-all (`misc/`, `other/`).
+- **Siblings don't overlap:** a folder's sub-folders split it into distinct subtopics; each note
+  lives in the one it's mainly about and links to the rest.
 
-**Reflect — priorities review.** Reads `dashboard.md` (stated priorities) + the log since the
-last reflect (what got done); suggests next steps per priority and discusses whether the
-priorities should change; the owner rules → `tools/reflect.md`.
+**When to create or split:**
+- **Created only with content:** a folder, at any level (a new domain included), is created only
+  when there's content to file: never speculatively, never empty, and never for a single note
+  (that only adds a level). New folders, splits and moves are proposed; the owner rules.
+- **A domain's top level holds at most ~7 items**; past that, group notes into sub-folders,
+  keeping at the top only the notes a session should see first (e.g. its fact base, its main
+  plan).
+- **Below the top level,** a folder is checked for a split as it passes ~15 items.
+- **Moves, renames and merges:** a folder that drops to one note folds into its parent (its index
+  goes); a move updates both indexes and rewrites path mentions in text (wikilinks survive, since
+  names are unique); renaming a note or a heading rewrites every link and § pointer to it (one text
+  search for `[[old-name` or `§Old heading`; the log keeps its old links).
 
-Both **owner-triggered only — never run unprompted.**
+## 5. Functions
+Three baseline functions — **Read**, **Update**, **Close** — written out here. Other functions
+get a one-line pointer here and are read only when that work starts.
 
-## 4. Playbooks — read before starting that kind of work
-- **Bootstrap** (fresh repo → working vault; run once — retires itself when done) → `tools/bootstrap.md`.
-- **Ingest** (absorb existing material — a folder, an export, a project) → `tools/ingest.md`.
-- *The owner's own playbooks go here as they emerge — one routing line each, procedure in
-  `tools/`: anything that recurs and has rules (course notes, writing voice, a weekly review).*
+**Read — find and use knowledge.** Start at `index.md` and follow the indexes down; read what the
+answer needs and no more — a text search of the repo (e.g. `grep`) only when the indexes don't
+resolve it. Ground answers in what's actually written, never generic, using each kind as §2
+describes; cite each note the answer draws on (not every note opened) as repo path + § heading
+(e.g. `career/job-search.md` §Pipeline), with the `verified:` date of any fact the answer
+rests on that can change.
+
+**Update — add or change knowledge** — when the owner asks, and unasked whenever the conversation
+produces something worth keeping. Test: *would a future session answer differently because of
+this?* (e.g. a changed operational fact, a decision + its why, a synthesis, feedback on how to
+work). Facts and the owner's decisions → file directly; the LLM's own interpretations → offer
+first; skip explorations that reached no conclusion, and hypotheticals. **Rule text (`CLAUDE.md`,
+`playbooks/`, `functions/` with its scripts, the dashboard's and the log's headers) changes only
+with the owner's explicit approval:** feedback on how to work becomes a proposed edit, never a
+silent one. For source material (a document, a lecture), discuss the key takeaways before writing.
+
+Every update:
+- **Filing:** one home per fact — extend the note that owns the topic, or create one (wired into
+  its index) if none does; elsewhere, link to that home instead of restating the fact.
+  `[[wikilink]]` related notes to each other.
+- **Editing:** update in place over appending duplicates; preserve the owner's own wording; don't
+  fabricate facts — leave a `_(to fill)_` blank. If new information *contradicts* the note, stop
+  and re-confirm with the owner before overwriting.
+- **Gates:** pass both gates (format, content; §3) and the indexing rules (§4); if the edit
+  changed what the note owns, rewrite its `description` and the index line that copies it.
+- **Copies:** when a fact changes, search the repo for its old value and key terms (e.g. a
+  number, a date, a name) and rewrite every place that still states it or a conclusion drawn
+  from it, until no old version remains.
+- **Dashboard:** keep `dashboard.md` current per its header.
+- **Edit report:** end the reply with a standalone report: a bold `Edit report` label, then the
+  task's `log/log.md` entry quoted as a `>` blockquote (entry text only, without the `## `
+  marker), then the commit hash on its own line. On an amend-in-place, quote only what was added
+  or reworded this round, verbatim, and note that the rest is unchanged. An unsealed mid-task
+  update reports the notes touched and a one-liner the same way. Don't narrate the log and
+  commit steps.
+
+**Close — seal a task.** A task gets one `log/log.md` entry, and a **commit + push** (message
+mirroring the entry) at each milestone: a finished step (e.g. a reviewed section, a ruled batch of
+decisions), the task landing, or a pause. Not per edit or approval; never held for an unrelated
+open question; never leave work uncommitted or unpushed at a pause. Each later milestone, or a
+reopened task, **amends the entry in place** and commits again. Log entry, **a sentence or two when
+fresh**: `## [YYYY-MM-DD] <op> | [[notes touched]] — one-liner` (`<op>` from the log header's
+list), saying *what changed and the decision/why*, never the detail (it's in the notes) or the diff
+(it's in git). Each amendment appends as an indented `Amend:` line of a sentence or two; an amended
+entry may outgrow that, but never re-compress it. The active log holds the current quarter; at
+quarter close, sweep it to `log/log-YYYY-qN.md`.
+
+**Lint — repo health:** is the repo well-formed (links, indexes, sizes)? → `functions/lint.md`.
+
+**Reflect — priorities review:** progress against the priorities, and should they change? →
+`functions/reflect.md`.
+
+Lint and Reflect are **owner-triggered only — never run unprompted** (a due dashboard line
+raises them; the owner says go).
